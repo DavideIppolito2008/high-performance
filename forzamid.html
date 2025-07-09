@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strength Calculator</title>
+     <style>
+        /* General style */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ff0000;
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            text-transform: uppercase;
+            font-size: 24px;
+            font-weight: bold;
+        }
+h1 {
+    font-size: 64px; /* Dimensione grande */
+    font-weight: bold; /* Grassetto per maggiore impatto */
+    text-transform: uppercase; /* Testo in maiuscolo per enfasi */
+    margin: 20px 0; /* Margine per spazio sopra e sotto */
+}
+
+        main.container {
+            background-color: black;
+            padding: 30px;
+            text-align: center;
+            max-width: 600px;
+            margin: 100px auto 20px auto;
+            border: 2px solid #ff0000;
+            box-shadow: 0 0 20px #ff0000;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            justify-self: end;
+        }
+
+        form input {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        p#result {
+            text-align: center; /* Center the text */
+            font-size: 20px; /* Increase font size for emphasis */
+            font-weight: bold; /* Make the text bold */
+            color: #ff0000; /* Make the result red to stand out */
+            margin-top: 20px; /* Add space above the result */
+        }
+
+        .button-container {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        button.red-btn {
+            padding: 15px 30px;
+            background-color: #ff0000;
+            color: white;
+            border: 2px solid black;
+            cursor: pointer;
+            width: 220px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+
+        button.red-btn:hover {
+            background-color: #cc0000;
+            transform: scale(1.05);
+        }
+
+        button.home-btn {
+            padding: 15px 30px;
+            background-color: white;
+            color: #ff0000;
+            border: 2px solid #ff0000;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, background-color 0.3s, color 0.3s;
+        }
+
+        button.home-btn:hover {
+            background-color: #ff0000;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Media query for mobile devices */
+        @media (max-width: 768px) {
+            main.container {
+                padding: 20px;
+            }
+
+            header {
+                font-size: 20px;
+                padding: 15px 0;
+            }
+
+            form {
+                grid-template-columns: 1fr;
+            }
+
+            form label {
+                justify-self: start;
+            }
+
+            button.red-btn {
+                width: 100%;
+            }
+              h1 {
+        font-size: 36px; /* Riduce la dimensione del testo su dispositivi mobili */
+    }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <section>
+            <h1 style="color: #ff0000;">Calculate Your Strength Level</h1>
+            <h2>Calculate Your Strength Level</h2>
+            <form>
+                <label for="exercise">Select exercise:</label>
+                <select id="exercise">
+                    <option value="deadlift">Deadlift</option>
+                    <option value="squat">Squat</option>
+                    <option value="bench">Bench Press</option>
+                </select>
+
+                <label for="gender">Select your gender:</label>
+                <select id="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+
+                <label for="bodyweight">Enter your body weight (kg):</label>
+                <input type="number" id="bodyweight" min="1">
+
+                <label for="lifted">Enter the weight lifted (kg):</label>
+                <input type="number" id="lifted" min="1">
+
+                <label for="age">Enter your age:</label>
+                <input type="number" id="age" min="1">
+
+                <br>
+                <button onclick="calculateStrength(event)" class="red-btn">Calculate</button>
+
+                <h2>Result</h2>
+                <p id="result"></p>
+            </form>
+
+            <button class="home-btn" onclick="location.href='index.html'">Back to Home</button>
+        </section>
+    </main>
+
+    <script>
+        const strengthTables = {
+            male: {
+                deadlift: [
+                    { level: "Beginner", weight: 78 },
+                    { level: "Novice", weight: 112 },
+                    { level: "Intermediate", weight: 152 },
+                    { level: "Advanced", weight: 200 },
+                    { level: "Elite", weight: 250 }
+                ],
+                squat: [
+                    { level: "Beginner", weight: 64 },
+                    { level: "Novice", weight: 93 },
+                    { level: "Intermediate", weight: 130 },
+                    { level: "Advanced", weight: 173 },
+                    { level: "Elite", weight: 219 }
+                ],
+                bench: [
+                    { level: "Beginner", weight: 47 },
+                    { level: "Novice", weight: 70 },
+                    { level: "Intermediate", weight: 98 },
+                    { level: "Advanced", weight: 132 },
+                    { level: "Elite", weight: 169 }
+                ]
+            },
+            female: {
+                deadlift: [
+                    { level: "Beginner", weight: 38 },
+                    { level: "Novice", weight: 60 },
+                    { level: "Intermediate", weight: 87 },
+                    { level: "Advanced", weight: 120 },
+                    { level: "Elite", weight: 157 }
+                ],
+                squat: [
+                    { level: "Beginner", weight: 30 },
+                    { level: "Novice", weight: 48 },
+                    { level: "Intermediate", weight: 73 },
+                    { level: "Advanced", weight: 103 },
+                    { level: "Elite", weight: 136 }
+                ],
+                bench: [
+                    { level: "Beginner", weight: 17 },
+                    { level: "Novice", weight: 31 },
+                    { level: "Intermediate", weight: 51 },
+                    { level: "Advanced", weight: 74 },
+                    { level: "Elite", weight: 101 }
+                ]
+            }
+        };
+
+        const weightRatioTables = {
+            male: {
+                deadlift: [
+                    { level: "Beginner", ratio: 1.00 },
+                    { level: "Novice", ratio: 1.50 },
+                    { level: "Intermediate", ratio: 2.00 },
+                    { level: "Advanced", ratio: 2.50 },
+                    { level: "Elite", ratio: 3.00 }
+                ],
+                squat: [
+                    { level: "Beginner", ratio: 0.75 },
+                    { level: "Novice", ratio: 1.25 },
+                    { level: "Intermediate", ratio: 1.50 },
+                    { level: "Advanced", ratio: 2.25 },
+                    { level: "Elite", ratio: 2.75 }
+                ],
+                bench: [
+                    { level: "Beginner", ratio: 0.50 },
+                    { level: "Novice", ratio: 0.75 },
+                    { level: "Intermediate", ratio: 1.25 },
+                    { level: "Advanced", ratio: 1.75 },
+                    { level: "Elite", ratio: 2.00 }
+                ]
+            },
+            female: {
+                deadlift: [
+                    { level: "Beginner", ratio: 0.50 },
+                    { level: "Novice", ratio: 1.00 },
+                    { level: "Intermediate", ratio: 1.25 },
+                    { level: "Advanced", ratio: 1.75 },
+                    { level: "Elite", ratio: 2.50 }
+                ],
+                squat: [
+                    { level: "Beginner", ratio: 0.50 },
+                    { level: "Novice", ratio: 0.75 },
+                    { level: "Intermediate", ratio: 1.25 },
+                    { level: "Advanced", ratio: 1.50 },
+                    { level: "Elite", ratio: 2.00 }
+                ],
+                bench: [
+                    { level: "Beginner", ratio: 0.25 },
+                    { level: "Novice", ratio: 0.50 },
+                    { level: "Intermediate", ratio: 0.75 },
+                    { level: "Advanced", ratio: 1.00 },
+                    { level: "Elite", ratio: 1.50 }
+                ]
+            }
+        };
+
+        const ageStrengthTables = {
+            male: {
+                deadlift: [
+                    [15, 67, 95, 130, 170, 213],
+                    [20, 76, 109, 148, 194, 244],
+                    [25, 78, 112, 152, 200, 250],
+                    [30, 78, 112, 152, 200, 250],
+                    [35, 78, 112, 152, 200, 250],
+                    [40, 78, 112, 152, 200, 250],
+                    [45, 74, 106, 145, 189, 238],
+                    [50, 70, 99, 136, 178, 223],
+                    [55, 65, 92, 125, 164, 206],
+                    [60, 59, 84, 115, 150, 188],
+                    [65, 53, 76, 103, 135, 170],
+                    [70, 48, 68, 93, 122, 153],
+                    [75, 43, 61, 83, 109, 136],
+                    [80, 38, 54, 74, 97, 122],
+                    [85, 34, 49, 67, 87, 109],
+                    [90, 31, 44, 60, 79, 99]
+                ],
+                squat: [
+                    [15, 55, 80, 111, 147, 187],
+                    [20, 62, 91, 127, 168, 214],
+                    [25, 64, 93, 130, 173, 219],
+                    [30, 64, 93, 130, 173, 219],
+                    [35, 64, 93, 130, 173, 219],
+                    [40, 64, 93, 130, 173, 219],
+                    [45, 61, 89, 123, 164, 208],
+                    [50, 57, 83, 116, 154, 195],
+                    [55, 53, 77, 107, 142, 180],
+                    [60, 48, 70, 98, 130, 165],
+                    [65, 44, 63, 88, 117, 149],
+                    [70, 39, 57, 79, 105, 134],
+                    [75, 35, 51, 71, 94, 119],
+                    [80, 31, 46, 63, 84, 107],
+                    [85, 28, 41, 57, 75, 96],
+                    [90, 25, 37, 51, 68, 86]
+                ],
+                bench: [
+                    [15, 40, 59, 84, 112, 144],
+                    [20, 46, 68, 96, 129, 164],
+                    [25, 47, 70, 98, 132, 169],
+                    [30, 47, 70, 98, 132, 169],
+                    [35, 47, 70, 98, 132, 169],
+                    [40, 47, 70, 98, 132, 169],
+                    [45, 44, 66, 93, 125, 160],
+                    [50, 42, 62, 88, 118, 150],
+                    [55, 39, 57, 81, 109, 139],
+                    [60, 35, 52, 74, 99, 127],
+                    [65, 32, 47, 67, 90, 115],
+                    [70, 29, 42, 60, 80, 103],
+                    [75, 26, 38, 54, 72, 92],
+                    [80, 23, 34, 48, 64, 82],
+                    [85, 20, 30, 43, 58, 74],
+                    [90, 18, 27, 39, 52, 66]
+                ]
+            },
+            female: {
+                deadlift: [
+                    [15, 32, 51, 74, 102, 133],
+                    [20, 37, 58, 85, 117, 153],
+                    [25, 38, 60, 87, 120, 157],
+                    [30, 38, 60, 87, 120, 157],
+                    [35, 38, 60, 87, 120, 157],
+                    [40, 38, 60, 87, 120, 157],
+                    [45, 36, 57, 83, 114, 149],
+                    [50, 34, 53, 78, 107, 139],
+                    [55, 31, 49, 72, 99, 129],
+                    [60, 29, 45, 66, 90, 118],
+                    [65, 26, 41, 59, 82, 106],
+                    [70, 23, 36, 53, 73, 95],
+                    [75, 21, 33, 48, 66, 85],
+                    [80, 19, 29, 43, 59, 76],
+                    [85, 17, 26, 38, 53, 68],
+                    [90, 15, 23, 34, 47, 62]
+                ],
+                squat: [
+                    [15, 25, 41, 62, 88, 116],
+                    [20, 29, 47, 71, 100, 132],
+                    [25, 30, 48, 73, 103, 136],
+                    [30, 30, 48, 73, 103, 136],
+                    [35, 30, 48, 73, 103, 136],
+                    [40, 30, 48, 73, 103, 136],
+                    [45, 28, 46, 69, 97, 129],
+                    [50, 26, 43, 65, 92, 121],
+                    [55, 24, 40, 60, 85, 112],
+                    [60, 22, 36, 55, 77, 102],
+                    [65, 20, 33, 50, 70, 92],
+                    [70, 18, 29, 44, 63, 83],
+                    [75, 16, 26, 40, 56, 74],
+                    [80, 14, 24, 36, 50, 66],
+                    [85, 13, 21, 32, 45, 59],
+                    [90, 12, 19, 29, 40, 54]
+                ],
+                bench: [
+                    [15, 15, 27, 43, 63, 86],
+                    [20, 17, 31, 49, 72, 98],
+                    [25, 17, 31, 51, 74, 101],
+                    [30, 17, 31, 51, 74, 101],
+                    [35, 17, 31, 51, 74, 101],
+                    [40, 17, 31, 51, 74, 101],
+                    [45, 16, 30, 48, 70, 96],
+                    [50, 15, 28, 45, 66, 90],
+                    [55, 14, 26, 42, 61, 83],
+                    [60, 13, 24, 38, 56, 76],
+                    [65, 12, 21, 34, 50, 69],
+                    [70, 11, 19, 31, 45, 62],
+                    [75, 9, 17, 28, 40, 55],
+                    [80, 8, 15, 25, 36, 49],
+                    [85, 8, 14, 22, 32, 44],
+                    [90, 7, 12, 20, 29, 40]
+                ]
+            }
+        };
+
+        function calculateStrength(event) {
+            event.preventDefault();  // Prevents form submit behavior
+
+            const exercise = document.getElementById("exercise").value;
+            const gender = document.getElementById("gender").value;
+            const bodyweight = parseFloat(document.getElementById("bodyweight").value);
+            const lifted = parseFloat(document.getElementById("lifted").value);
+            const age = parseInt(document.getElementById("age").value);
+            let result = "";
+
+            // Strength level calculation
+            const strengthLevels = strengthTables[gender][exercise];
+            for (const level of strengthLevels) {
+                if (lifted <= level.weight) {
+                    result = `You are at the level: ${level.level}`;
+                    break;
+                }
+            }
+
+            // Strength-to-bodyweight ratio calculation
+            const ratioLevels = weightRatioTables[gender][exercise];
+            const ratio = lifted / bodyweight;
+            for (const level of ratioLevels) {
+                if (ratio <= level.ratio) {
+                    result += `<br>Your strength-to-bodyweight ratio is at the level: ${level.level}`;
+                    break;
+                }
+            }
+
+            // Age-adjusted strength calculation
+            const ageStrengthLevels = ageStrengthTables[gender][exercise];
+            let ageStrength;
+            for (const row of ageStrengthLevels) {
+                if (age <= row[0]) {
+                    for (let i = 1; i < row.length; i++) {
+                        if (lifted <= row[i]) {
+                            ageStrength = `Based on your age (${age} years), your strength level is ${["Beginner", "Novice", "Intermediate", "Advanced", "Elite"][i - 1]}`;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+
+            document.getElementById("result").innerHTML = result + "<br>" + ageStrength;
+        }
+    </script>
+</body>
+</html>
