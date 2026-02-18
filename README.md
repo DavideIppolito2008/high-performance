@@ -2,7 +2,7 @@
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="360" alt="Laravel Logo"></a></p>
 
-Small Laravel app demonstrating fitness strength standards and a responsive "Forza Media" page.
+Small Laravel app demonstrating fitness strength standards and a responsive "average strength" page.
 
 ## High Performance
 
